@@ -33,6 +33,7 @@
                     <label class="form-label" style="font-size:.78rem; color:#8b949e;">Lokasi Asal <span style="color:#f85149;">*</span></label>
                     <input type="text" name="lokasi_asal" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" placeholder="Site Asal" required value="{{ old('lokasi_asal') }}">
                 </div>
+
                 <div class="col-md-4">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e;">Customer Name <span style="color:#f85149;">*</span></label>
                     <input type="text" name="customer_name" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" placeholder="Nama Pelanggan" required value="{{ old('customer_name') }}">
@@ -41,22 +42,28 @@
                     <label class="form-label" style="font-size:.78rem; color:#8b949e;">Valuation Type <span style="color:#f85149;">*</span></label>
                     <select name="valuation_type" class="form-select form-select-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" required>
                         <option value="" disabled selected>-- Pilih --</option>
-                        <option value="Ex-Project">Ex-Project</option>
-                        <option value="Dismantle">Dismantle</option>
-                        <option value="Rusak">Rusak</option>
+                        <option value="Ex-Project" {{ old('valuation_type') == 'Ex-Project' ? 'selected' : '' }}>Ex-Project</option>
+                        <option value="Dismantle" {{ old('valuation_type') == 'Dismantle' ? 'selected' : '' }}>Dismantle</option>
+                        <option value="Rusak-L" {{ old('valuation_type') == 'Rusak-L' ? 'selected' : '' }}>Rusak-L</option>
+                        <option value="Rusak-TL" {{ old('valuation_type') == 'Rusak-TL' ? 'selected' : '' }}>Rusak-TL</option>
                     </select>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e;">Nama Perangkat <span style="color:#f85149;">*</span></label>
-                    <input type="text" name="nama_perangkat" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" required value="{{ old('nama_perangkat') }}">
+                    <input type="text" name="nama_perangkat" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" placeholder="Contoh: Switch" required value="{{ old('nama_perangkat') }}">
                 </div>
+
                 <div class="col-md-4">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e;">Merk</label>
-                    <input type="text" name="merk" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" value="{{ old('merk') }}">
+                    <input type="text" name="merk" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" placeholder="Contoh: Raisecom" value="{{ old('merk') }}">
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-4">
+                    <label class="form-label" style="font-size:.78rem; color:#8b949e;">Tipe Perangkat <span style="color:#f85149;">*</span></label>
+                    <input type="text" name="type" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" placeholder="Contoh: ISCOM2600" required value="{{ old('type') }}">
+                </div>
+                <div class="col-md-4">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e;">Serial Number (S/N) <span style="color:#f85149;">*</span></label>
-                    <input type="text" name="serial_number" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" required value="{{ old('serial_number') }}">
+                    <input type="text" name="serial_number" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" placeholder="SN Perangkat" required value="{{ old('serial_number') }}">
                 </div>
             </div>
 

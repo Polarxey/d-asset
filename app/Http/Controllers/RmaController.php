@@ -26,6 +26,7 @@ class RmaController extends Controller
             'serial_number' => 'required|unique:assets,serial_number',
             'id_pa'         => 'required',
             'nama_perangkat' => 'required',
+            'type'          => 'required', 
         ], [
             'serial_number.unique' => 'S/N ini sudah ada di database!',
         ]);
@@ -34,6 +35,7 @@ class RmaController extends Controller
             'serial_number'  => $request->serial_number,
             'nama_perangkat' => $request->nama_perangkat,
             'merk'           => $request->merk,
+            'type'           => $request->type, 
             'sumber'         => 'retur',
             'status'         => 'Standby',
             'id_pa'          => $request->id_pa,
