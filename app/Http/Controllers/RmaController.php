@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asset;
-use App\Models\TransaksiRma;
 use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -26,6 +25,9 @@ class RmaController extends Controller
         $request->validate([
             'serial_number' => 'required|unique:assets,serial_number',
             'id_pa'         => 'required',
+            'nama_perangkat' => 'required',
+        ], [
+            'serial_number.unique' => 'S/N ini sudah ada di database!',
         ]);
 
         $asset = Asset::create([
@@ -41,32 +43,26 @@ class RmaController extends Controller
             'tanggal_masuk'  => $request->tanggal_masuk,
         ]);
 
-        $rma = TransaksiRma::create(array_merge(
-            $request->all(),
-            ['asset_id' => $asset->id, 'status_proses' => 'Pending']
-        ));
-
         ActivityLog::catat(
             'create_retur',
             "Barang retur S/N {$asset->serial_number} didata sebagai Standby Masuk",
             'Asset', $asset->id, null, $asset->toArray()
         );
 
-        return redirect()->route('rma.index')->with('success', 'Data retur berhasil disimpan.');
+        return redirect()->route('rma.index')->with('success', 'Data retur berhasil disimpan!');
     }
 
     public function generateForm($assetId)
     {
         $asset = Asset::findOrFail($assetId);
-        $rma = TransaksiRma::where('asset_id', $assetId)->firstOrFail();
-        
-        return view('rma.generate', compact('asset', 'rma'));
+        $autoNoRma = 'RMA-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -4));
+        return view('rma.generate', compact('asset', 'autoNoRma'));
     }
 
     public function generatePdf(Request $request, $assetId)
     {
         $asset = Asset::findOrFail($assetId);
-        $rma = TransaksiRma::where('asset_id', $assetId)->firstOrFail();
+        
         $dataLama = $asset->toArray();
 
         $asset->update([
@@ -74,21 +70,14 @@ class RmaController extends Controller
             'lokasi' => 'Gudang'
         ]);
 
-        $rma->update([
-            'status_proses' => 'Completed',
-            'no_rma'        => $request->no_rma ?? 'RMA-'.time(),
-            'tanggal_rma'   => now(),
-        ]);
-
         ActivityLog::catat(
             'generate_rma',
-            "RMA diterbitkan untuk S/N {$asset->serial_number}. Status berubah jadi Ready.",
+            "RMA diterbitkan untuk S/N {$asset->serial_number}. Barang masuk Gudang.",
             'Asset', $asset->id, $dataLama, $asset->fresh()->toArray()
         );
 
-        $safeFileName = str_replace(['/', '\\'], '_', $asset->serial_number);
-        $pdf = Pdf::loadView('pdf.rma', compact('asset', 'rma', 'request'));
+        $pdf = Pdf::loadView('pdf.rma', compact('asset', 'request'));
         
-        return $pdf->download('RMA_' . $safeFileName . '.pdf');
+        return $pdf->download('RMA_' . $asset->serial_number . '.pdf');
     }
 }
