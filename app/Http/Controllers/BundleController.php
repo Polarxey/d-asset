@@ -10,106 +10,98 @@ use Illuminate\Http\Request;
 
 class BundleController extends Controller
 {
-    // Halaman buat paket baru — menampilkan stok Ready
-    public function create()
-    {
-        // Kelompokkan asset Ready berdasarkan nama_perangkat + merk untuk ditampilkan qty-nya
-        $readyAssets = Asset::ready()
-            ->selectRaw('nama_perangkat, merk, COUNT(*) as stok_tersedia, GROUP_CONCAT(id) as asset_ids')
-            ->groupBy('nama_perangkat', 'merk')
-            ->get();
-
-        return view('bundle.create', compact('readyAssets'));
-    }
-
-    // Simpan paket baru
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nama_paket'          => 'required|string',
-            'keterangan'          => 'nullable|string',
-            'items'               => 'required|array|min:1',
-            'items.*.nama_perangkat' => 'required|string',
-            'items.*.qty'         => 'required|integer|min:1',
-        ]);
-
-        $bundle = Bundle::create([
-            'nama_paket'  => $request->nama_paket,
-            'keterangan'  => $request->keterangan,
-            'status'      => Bundle::STATUS_DRAFT,
-        ]);
-
-        $warnings  = [];
-        $assetIds  = [];
-
-        foreach ($request->items as $item) {
-            // Ambil asset Ready sesuai nama_perangkat sebanyak qty yang diminta
-            $availableAssets = Asset::ready()
-                ->where('nama_perangkat', $item['nama_perangkat'])
-                ->take($item['qty'])
-                ->get();
-
-            $actualQty = $availableAssets->count();
-
-            if ($actualQty < $item['qty']) {
-                $warnings[] = "Stok {$item['nama_perangkat']} hanya tersedia {$actualQty} unit (diminta {$item['qty']}).";
-            }
-
-            foreach ($availableAssets as $asset) {
-                BundleItem::create([
-                    'bundle_id' => $bundle->id,
-                    'asset_id'  => $asset->id,
-                    'qty'       => 1,
-                ]);
-
-                // Ubah status asset ke Standby-Keluar
-                $asset->update(['status' => Asset::STATUS_STANDBY_KELUAR]);
-                $assetIds[] = $asset->id;
-            }
-        }
-
-        ActivityLog::catat(
-            'create_bundle',
-            "Paket '{$bundle->nama_paket}' dibuat dengan " . count($assetIds) . " perangkat",
-            'Bundle', $bundle->id,
-            null,
-            ['nama_paket' => $bundle->nama_paket, 'jumlah_item' => count($assetIds)]
-        );
-
-        $message = "Paket '{$bundle->nama_paket}' berhasil dibuat!";
-        if (!empty($warnings)) {
-            $message .= ' Peringatan: ' . implode(' ', $warnings);
-        }
-
-        return redirect()->route('bundle.index')->with('success', $message);
-    }
-
-    // Daftar semua paket
     public function index()
     {
         $bundles = Bundle::with('items.asset')->latest()->get();
         return view('bundle.index', compact('bundles'));
     }
 
-    // Batalkan/hapus paket — kembalikan aset ke Ready
-    public function destroy($id)
+    public function create()
     {
-        $bundle = Bundle::with('items.asset')->findOrFail($id);
+        $readyAssets = Asset::where('status', 'Ready')
+            ->selectRaw('nama_perangkat, merk, count(*) as stok_tersedia')
+            ->groupBy('nama_perangkat', 'merk')
+            ->get();
 
-        foreach ($bundle->items as $item) {
-            if ($item->asset) {
-                $item->asset->update(['status' => Asset::STATUS_READY]);
+        return view('bundle.create', compact('readyAssets'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama_paket' => 'required',
+            'items'      => 'required|array',
+        ]);
+
+        $itemsToProcess = [];
+        $totalQty = 0;
+
+        foreach ($request->items as $item) {
+            if (isset($item['qty']) && $item['qty'] > 0) {
+                $assets = Asset::where('status', 'Ready')
+                    ->where('nama_perangkat', $item['nama_perangkat'])
+                    ->take($item['qty'])
+                    ->get();
+
+                if ($assets->count() < $item['qty']) {
+                    return redirect()->back()->withErrors("Stok {$item['nama_perangkat']} kurang!");
+                }
+                
+                $itemsToProcess = array_merge($itemsToProcess, $assets->all());
+                $totalQty += $item['qty'];
             }
         }
 
+        if (empty($itemsToProcess)) {
+            return redirect()->back()->withErrors("Belum ada barang yang dipilih.");
+        }
+
+        $bundle = Bundle::create([
+            'nama_paket' => $request->nama_paket,
+            'status'     => 'draft',
+            'keterangan' => $request->keterangan,
+        ]);
+
+        foreach ($itemsToProcess as $asset) {
+            BundleItem::create([
+                'bundle_id' => $bundle->id,
+                'asset_id'  => $asset->id,
+                'qty'       => 1,
+            ]);
+
+            $asset->update([
+                'status' => 'Standby-Keluar',
+            ]);
+        }
+
         ActivityLog::catat(
-            'delete_bundle',
-            "Paket '{$bundle->nama_paket}' dibatalkan. Semua perangkat dikembalikan ke Ready.",
-            'Bundle', $id
+            'create_transaksi_keluar',
+            "Membuat transaksi keluar '{$bundle->nama_paket}' sejumlah {$totalQty} unit",
+            'Bundle', $bundle->id, null, $bundle->toArray()
+        );
+
+        return redirect()->route('transactions.create', ['bundle_id' => $bundle->id])
+                         ->with('success', 'Barang berhasil disiapkan!');
+    }
+
+    public function destroy($id)
+    {
+        $bundle = Bundle::findOrFail($id);
+
+        foreach ($bundle->items as $item) {
+            $item->asset->update([
+                'status' => 'Ready',
+            ]);
+        }
+
+        ActivityLog::catat(
+            'delete_paket',
+            "Menghapus paket '{$bundle->nama_paket}'",
+            'Bundle', $bundle->id, $bundle->toArray(), null
         );
 
         $bundle->delete();
 
-        return redirect()->route('bundle.index')->with('success', "Paket dibatalkan. Aset dikembalikan ke Ready.");
+        return redirect()->route('bundle.index')->with('success', 'Paket dibatalkan, barang kembali ke Ready.');
     }
 }

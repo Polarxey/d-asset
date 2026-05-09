@@ -2,7 +2,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h4 class="fw-bold mb-0" style="color:#c9d1d9;"><i class="ti ti-list-details me-2" style="color:#58a6ff;"></i>Daftar Paket</h4>
-        <p class="mb-0" style="color:#8b949e; font-size:.85rem;">Semua paket keluar yang dibuat. Pilih paket untuk di-generate BSTP-nya.</p>
+        
     </div>
     <a href="<?php echo e(route('bundle.create')); ?>" class="btn btn-sm px-3" style="background:#1f6feb; color:#fff; border:none; border-radius:6px; font-size:.82rem;">
         <i class="ti ti-plus me-1"></i>Buat Paket Baru

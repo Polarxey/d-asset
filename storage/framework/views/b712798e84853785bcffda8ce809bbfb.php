@@ -1,7 +1,7 @@
 <?php $__env->startSection('content'); ?>
 <div class="mb-4">
     <h4 class="fw-bold mb-0" style="color:#c9d1d9;"><i class="ti ti-arrow-back-up me-2" style="color:#e3b341;"></i>Input Barang Retur</h4>
-    <p class="mb-0" style="color:#8b949e; font-size:.85rem;">Barang ex-proyek, dismantle, atau rusak dari lapangan. Otomatis masuk <span style="color:#e3b341;">Standby Masuk</span>.</p>
+    
 </div>
 
 <div class="card">

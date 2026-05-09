@@ -1,0 +1,49 @@
+@extends('welcome')
+
+@section('content')
+<div class="mb-4">
+    <h4 class="fw-bold mb-0" style="color:#c9d1d9;"><i class="ti ti-file-text me-2" style="color:#e3b341;"></i>Generate RMA</h4>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-dark table-hover mb-0" style="font-size:.82rem;">
+            <thead>
+                <tr style="color:#8b949e; border-bottom:1px solid #21262d;">
+                    <th class="ps-4 py-3">S/N</th>
+                    <th>Nama Perangkat</th>
+                    <th>Merk</th>
+                    <th>ID PA</th>
+                    <th>Customer</th>
+                    <th>Tgl Masuk</th>
+                    <th class="text-center pe-4">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($assets as $item)
+                <tr>
+                    <td class="ps-4 fw-bold" style="color:#58a6ff;">{{ $item->serial_number }}</td>
+                    <td>{{ $item->nama_perangkat }}</td>
+                    <td style="color:#8b949e;">{{ $item->merk ?? '-' }}</td>
+                    <td><code style="color:#e3b341;">{{ $item->id_pa ?? '-' }}</code></td>
+                    <td>{{ $item->customer_name ?? '-' }}</td>
+                    <td style="color:#8b949e;">{{ $item->tanggal_masuk?->format('d/m/Y') ?? '-' }}</td>
+                    <td class="text-center pe-4">
+                        <a href="{{ route('rma.generate.form', $item->id) }}" class="btn btn-sm" style="background:#1f3a2a; color:#3fb950; border:1px solid #238636; font-size:.75rem; border-radius:6px;">
+                            <i class="ti ti-file-description me-1"></i>Generate RMA
+                        </a>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="7" class="text-center py-5" style="color:#484f58;">
+                        <i class="ti ti-package-off d-block mb-2" style="font-size:2rem;"></i>
+                        Tidak ada barang di Standby Masuk yang menunggu proses RMA.
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+@endsection

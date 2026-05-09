@@ -2,7 +2,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h4 class="fw-bold mb-0" style="color:#c9d1d9;"><i class="ti ti-history me-2" style="color:#8b949e;"></i>Riwayat BSTP</h4>
-        <p class="mb-0" style="color:#8b949e; font-size:.85rem;">Semua dokumen BSTP yang pernah diterbitkan.</p>
+        
     </div>
     <a href="<?php echo e(route('transactions.create')); ?>" class="btn btn-sm px-3" style="background:#238636; color:#fff; border:none; border-radius:6px; font-size:.82rem;">
         <i class="ti ti-plus me-1"></i>Generate BSTP Baru

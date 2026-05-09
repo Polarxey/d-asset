@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>BSTP - {{ $transaction->no_bstp }}</title>
+    <title>BSTP - <?php echo e($transaction->no_bstp); ?></title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -47,11 +47,11 @@
 <body>
 
     <div class="header">
-        <img src="{{ public_path('img/logo-icon.png') }}" class="logo">
+        <img src="<?php echo e(public_path('img/logo-icon.png')); ?>" class="logo">
     </div>
 
     <div class="content">
-        <p>Telah diserah terimakan Aksesoris FO berikut ini dari PLN ICON Plus kepada {{ $transaction->penerima }} untuk {{ $transaction->lokasi_tujuan }} dengan rincian sebagai berikut:</p>
+        <p>Telah diserah terimakan Aksesoris FO berikut ini dari PLN ICON Plus kepada <?php echo e($transaction->penerima); ?> untuk <?php echo e($transaction->lokasi_tujuan); ?> dengan rincian sebagai berikut:</p>
     </div>
 
     <table class="table">
@@ -65,15 +65,15 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($transaction->details as $index => $detail)
+            <?php $__currentLoopData = $transaction->details; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $detail): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <tr>
-                <td style="text-align: center;">{{ $index + 1 }}</td>
-                <td>{{ $detail->nama_perangkat }}</td>
-                <td style="text-align: center;">{{ $detail->satuan }}</td>
-                <td style="text-align: center;">{{ $detail->jumlah }}</td>
-                <td>{{ $detail->serial_numbers }}</td>
+                <td style="text-align: center;"><?php echo e($index + 1); ?></td>
+                <td><?php echo e($detail->nama_perangkat); ?></td>
+                <td style="text-align: center;"><?php echo e($detail->satuan); ?></td>
+                <td style="text-align: center;"><?php echo e($detail->jumlah); ?></td>
+                <td><?php echo e($detail->serial_numbers); ?></td>
             </tr>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </tbody>
     </table>
 
@@ -81,7 +81,7 @@
         <tr>
             <td>
                 <div>Yang Menyerahkan,</div>
-                <div>Bandung, {{ \Carbon\Carbon::parse($transaction->tanggal_serah)->translatedFormat('d F Y') }}</div>
+                <div>Bandung, <?php echo e(\Carbon\Carbon::parse($transaction->tanggal_serah)->translatedFormat('d F Y')); ?></div>
                 <div class="signature-space"></div>
                 <div>(PLN ICON PLUS)</div>
             </td>
@@ -89,10 +89,10 @@
                 <div>Yang Menerima,</div>
                 <div style="margin-top: 18px;"></div>
                 <div class="signature-space"></div>
-                <div>({{ $transaction->penerima }})</div>
+                <div>(<?php echo e($transaction->penerima); ?>)</div>
             </td>
         </tr>
     </table>
 
 </body>
-</html>
+</html><?php /**PATH D:\WINDOWS\XAMPP\htdocs\d-asset\resources\views/pdf/bstp.blade.php ENDPATH**/ ?>

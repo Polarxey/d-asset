@@ -1,7 +1,6 @@
 <?php $__env->startSection('content'); ?>
 <div class="mb-4">
     <h4 class="fw-bold mb-0" style="color:#c9d1d9;"><i class="ti ti-file-invoice me-2" style="color:#3fb950;"></i>Generate BSTP</h4>
-    <p class="mb-0" style="color:#8b949e; font-size:.85rem;">Pilih paket yang sudah dibuat, lengkapi detail, dan cetak dokumen BSTP.</p>
 </div>
 
 <?php if($bundles->isEmpty()): ?>
@@ -23,7 +22,6 @@
                 <form action="<?php echo e(route('transactions.store')); ?>" method="POST" id="bstpForm">
                 <?php echo csrf_field(); ?>
 
-                
                 <div class="mb-4">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e; text-transform:uppercase; letter-spacing:.5px;">Pilih Paket <span style="color:#f85149;">*</span></label>
                     <select name="bundle_id" id="bundleSelect" class="form-select form-select-sm"
@@ -40,7 +38,6 @@
                     </select>
                 </div>
 
-                
                 <div id="bundlePreview" class="mb-4 p-3 rounded" style="background:#161b22; border:1px solid #21262d; display:none;">
                     <div style="font-size:.75rem; color:#484f58; margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px;">Isi Paket:</div>
                     <div id="bundleItemsList" style="font-size:.8rem; color:#8b949e; line-height:1.8;"></div>
@@ -48,7 +45,6 @@
 
                 <hr style="border-color:#21262d; margin: 20px 0;">
 
-                
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label" style="font-size:.78rem; color:#8b949e; text-transform:uppercase; letter-spacing:.5px;">Nomor BSTP <span style="color:#f85149;">*</span></label>
@@ -87,7 +83,6 @@
         </div>
     </div>
 
-    
     <div class="col-md-5">
         <div class="card">
             <div class="card-body p-0">
@@ -115,6 +110,11 @@
                         <?php endif; ?>
                     </tbody>
                 </table>
+                <div class="p-3 text-center" style="border-top:1px solid #21262d;">
+                    <a href="<?php echo e(route('transactions.index')); ?>" class="btn btn-sm w-100" style="background:#1c2128; color:#8b949e; border:1px solid #30363d; font-size:.75rem; border-radius:6px;">
+                        Lihat Semua Riwayat BSTP
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -134,11 +134,9 @@ document.getElementById('bundleSelect')?.addEventListener('change', function() {
         preview.style.display = 'none';
     }
 });
-// Auto-trigger jika ada query param bundle_id
 if (document.getElementById('bundleSelect')?.value) {
     document.getElementById('bundleSelect').dispatchEvent(new Event('change'));
 }
 </script>
 <?php $__env->stopSection(); ?>
-
 <?php echo $__env->make('welcome', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\WINDOWS\XAMPP\htdocs\d-asset\resources\views/transactions/create.blade.php ENDPATH**/ ?>

@@ -24,12 +24,9 @@
         .card { background: #161b22; border: 1px solid #21262d; border-radius: 10px; }
         .table-dark { --bs-table-bg: #161b22; --bs-table-hover-bg: #1c2128; }
         .badge { font-weight: 500; font-size: 0.75rem; }
-        .breadcrumb-item, .breadcrumb-item a { font-size: 0.8rem; color: #8b949e; }
         .brand-logo { font-size: 1.2rem; font-weight: 700; color: #58a6ff; letter-spacing: -0.5px; }
         .brand-sub { font-size: 0.65rem; color: #484f58; letter-spacing: 1px; }
         .sidebar-footer { margin-top: auto; padding: 12px 14px; border-top: 1px solid #21262d; }
-        .stat-card { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 18px 20px; }
-        .stat-card:hover { border-color: #30363d; }
     </style>
 </head>
 <body>
@@ -55,7 +52,7 @@
 
         <div class="section-label">Transaksi Masuk</div>
         <li>
-            <a href="<?php echo e(route('rma.create')); ?>" class="nav-link <?php echo e(request()->routeIs('rma.*') ? 'active' : ''); ?>">
+            <a href="<?php echo e(route('rma.create')); ?>" class="nav-link <?php echo e(request()->routeIs('rma.create') ? 'active' : ''); ?>">
                 <i class="ti ti-arrow-back-up me-2"></i>Barang Retur
             </a>
         </li>
@@ -84,8 +81,8 @@
             </a>
         </li>
         <li>
-            <a href="<?php echo e(route('transactions.index')); ?>" class="nav-link <?php echo e(request()->routeIs('transactions.index') ? 'active' : ''); ?>">
-                <i class="ti ti-history me-2"></i>Riwayat BSTP
+            <a href="<?php echo e(route('rma.index')); ?>" class="nav-link <?php echo e(request()->routeIs('rma.index') || request()->routeIs('rma.generate.*') ? 'active' : ''); ?>">
+                <i class="ti ti-file-text me-2"></i>Generate RMA
             </a>
         </li>
 
@@ -107,28 +104,16 @@
 
 <div class="main-content">
     <?php if(session('success')): ?>
-    <div class="alert border-0 mb-4 d-flex align-items-center gap-2"
-         style="background:#1a3a2a; border-left:3px solid #238636 !important; border-radius:8px; color:#3fb950; padding:12px 16px; border-left: 3px solid #238636;">
+    <div class="alert border-0 mb-4 d-flex align-items-center gap-2" style="background:#1a3a2a; border-left:3px solid #238636 !important; color:#3fb950; padding:12px 16px;">
         <i class="ti ti-circle-check-filled"></i>
         <?php echo e(session('success')); ?>
 
     </div>
     <?php endif; ?>
-
-    <?php if(session('error')): ?>
-    <div class="alert border-0 mb-4 d-flex align-items-center gap-2"
-         style="background:#3a1a1a; border-left:3px solid #da3633 !important; border-radius:8px; color:#f85149; padding:12px 16px;">
-        <i class="ti ti-alert-circle"></i>
-        <?php echo e(session('error')); ?>
-
-    </div>
-    <?php endif; ?>
-
     <?php echo $__env->yieldContent('content'); ?>
 </div>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
-<?php /**PATH D:\WINDOWS\XAMPP\htdocs\d-asset\resources\views/welcome.blade.php ENDPATH**/ ?>
+</html><?php /**PATH D:\WINDOWS\XAMPP\htdocs\d-asset\resources\views/welcome.blade.php ENDPATH**/ ?>

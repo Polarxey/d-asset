@@ -1,7 +1,7 @@
 <?php $__env->startSection('content'); ?>
 <div class="mb-4">
     <h4 class="fw-bold mb-0" style="color:#c9d1d9;"><i class="ti ti-package-import me-2" style="color:#3fb950;"></i>Input Barang Masuk Baru</h4>
-    <p class="mb-0" style="color:#8b949e; font-size:.85rem;">Perangkat baru dari pusat. Otomatis masuk <span style="color:#3fb950;">Ready (Gudang)</span>.</p>
+    
 </div>
 
 <div class="card" style="max-width:680px;">
