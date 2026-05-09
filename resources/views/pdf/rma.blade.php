@@ -130,6 +130,12 @@
         </tr>
         <tr>
             <td>7.</td>
+            <td>Type</td>
+            <td>:</td>
+            <td>{{ $asset->type }}</td>
+        </tr>
+        <tr>
+            <td>8.</td>
             <td>Serial Number (SN) / Batch</td>
             <td>:</td>
             <td class="fw-bold">{{ $asset->serial_number }}</td>

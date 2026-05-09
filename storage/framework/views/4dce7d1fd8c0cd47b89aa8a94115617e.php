@@ -1,8 +1,11 @@
 
 
 <?php $__env->startSection('content'); ?>
-<div class="mb-4">
+<div class="mb-4 d-flex justify-content-between align-items-center">
     <h4 class="fw-bold mb-0" style="color:#c9d1d9;"><i class="ti ti-file-text me-2" style="color:#e3b341;"></i>Generate RMA</h4>
+    <a href="<?php echo e(route('rma.history')); ?>" class="btn btn-sm px-3" style="background:#161b22; color:#8b949e; border:1px solid #30363d; border-radius:6px;">
+        <i class="ti ti-history me-1"></i>Riwayat RMA
+    </a>
 </div>
 
 <div class="card">
