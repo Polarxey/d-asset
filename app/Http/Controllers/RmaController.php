@@ -24,62 +24,73 @@ class RmaController extends Controller
         return view('rma.history', compact('history'));
     }
 
-    // INI FUNGSI YANG TADI HILANG BUAT BUKA FORM INPUT
     public function create()
     {
+        // Menampilkan form input barang retur
         return view('rma.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'serial_number' => 'required|unique:assets,serial_number',
-            'id_pa'         => 'required',
+            // Jika ada asset_id (dari pencarian), abaikan validasi unique untuk S/N tersebut
+            'serial_number'  => 'required|unique:assets,serial_number,' . $request->asset_id,
+            'id_pa'          => 'required',
             'nama_perangkat' => 'required',
-            'type'          => 'required',
+            'type'           => 'required',
         ], [
             'serial_number.unique' => 'S/N ini sudah ada di database!',
         ]);
 
-        // 1. Simpan ke tabel Assets
-        $asset = Asset::create([
-            'serial_number'  => $request->serial_number,
-            'nama_perangkat' => $request->nama_perangkat,
-            'merk'           => $request->merk,
-            'type'           => $request->type,
-            'sumber'         => 'retur',
-            'status'         => 'Standby',
-            'id_pa'          => $request->id_pa,
-            'customer_name'  => $request->customer_name,
-            'lokasi_asal'    => $request->lokasi_asal,
-            'valuation_type' => $request->valuation_type,
-            'tanggal_masuk'  => $request->tanggal_masuk,
-        ]);
-
-        // 2. Buat record awal di tabel Transaksi RMA (Status Pending)
-        TransaksiRma::create([
-            'asset_id'       => $asset->id,
-            'id_pa'          => $asset->id_pa,
-            'tanggal_masuk'  => $asset->tanggal_masuk,
-            'lokasi_asal'    => $asset->lokasi_asal,
-            'customer_name'  => $asset->customer_name,
-            'valuation_type' => $asset->valuation_type,
-            'status_proses'  => 'Pending'
-        ]);
-
-        ActivityLog::catat(
-            'create_retur',
-            "Barang retur S/N {$asset->serial_number} didata sebagai Standby Masuk",
-            'Asset', $asset->id, null, $asset->toArray()
+        // Gunakan updateOrCreate agar jika S/N sudah ada (status Used), datanya diperbarui jadi Standby 
+        $asset = Asset::updateOrCreate(
+            ['serial_number' => $request->serial_number],
+            [
+                'nama_perangkat' => $request->nama_perangkat,
+                'merk'           => $request->merk,
+                'type'           => $request->type,
+                'sumber'         => 'retur',
+                'status'         => 'Standby', // Menjadi Standby Masuk 
+                'id_pa'          => $request->id_pa,
+                'customer_name'  => $request->customer_name,
+                'lokasi_asal'    => $request->lokasi_asal,
+                'valuation_type' => $request->valuation_type,
+                'tanggal_masuk'  => $request->tanggal_masuk,
+            ]
         );
 
-        return redirect()->route('rma.index')->with('success', 'Data retur berhasil disimpan!');
+        // Record di Transaksi RMA, semua field dimasukkan biar nggak error MySQL 1364
+        TransaksiRma::updateOrCreate(
+            ['asset_id' => $asset->id, 'status_proses' => 'Pending'],
+            [
+                'serial_number'  => $asset->serial_number,
+                'nama_perangkat' => $asset->nama_perangkat,
+                'merk'           => $asset->merk,
+                'type'           => $asset->type,
+                'id_pa'          => $asset->id_pa,
+                'tanggal_masuk'  => $asset->tanggal_masuk,
+                'lokasi_asal'    => $asset->lokasi_asal,
+                'customer_name'  => $asset->customer_name,
+                'valuation_type' => $asset->valuation_type,
+            ]
+        );
+
+        ActivityLog::catat(
+            'create_retur', 
+            "Barang S/N {$asset->serial_number} ditarik dari lapangan menjadi Standby Masuk", 
+            'Asset', 
+            $asset->id, 
+            null, 
+            $asset->toArray()
+        );
+
+        return redirect()->route('rma.index')->with('success', 'Data retur berhasil diproses!');
     }
 
-    // INI FUNGSI YANG TADI HILANG BUAT BUKA FORM GENERATE NOMOR RMA
     public function generateForm($assetId)
     {
         $asset = Asset::findOrFail($assetId);
+        // Generate Auto No RMA
         $autoNoRma = 'RMA-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -4));
         
         return view('rma.generate', compact('asset', 'autoNoRma'));
@@ -92,13 +103,13 @@ class RmaController extends Controller
         
         $dataLama = $asset->toArray();
 
-        // 1. Update status Asset jadi Ready & Gudang
+        // Update status Asset jadi Ready & Gudang
         $asset->update([
             'status' => 'Ready',
             'lokasi' => 'Gudang'
         ]);
 
-        // 2. Update status Transaksi RMA jadi Completed & simpan No RMA
+        // Update transaksi RMA jadi Completed
         if ($rma) {
             $rma->update([
                 'status_proses' => 'Completed',
@@ -113,7 +124,24 @@ class RmaController extends Controller
             'Asset', $asset->id, $dataLama, $asset->fresh()->toArray()
         );
 
+        // Cetak PDF
         $pdf = Pdf::loadView('pdf.rma', compact('asset', 'request'));
         return $pdf->download('RMA_' . $asset->serial_number . '.pdf');
+    }
+
+    public function searchUsed(Request $request)
+    {
+        $search = $request->get('q');
+        
+        // Cari barang yang statusnya 'Used' berdasarkan S/N atau Lokasi via AJAX
+        $assets = Asset::used()
+            ->where(function($query) use ($search) {
+                $query->where('serial_number', 'LIKE', "%$search%")
+                      ->orWhere('lokasi', 'LIKE', "%$search%");
+            })
+            ->limit(10)
+            ->get();
+
+        return response()->json($assets);
     }
 }

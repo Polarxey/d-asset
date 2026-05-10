@@ -18,55 +18,47 @@ class BundleController extends Controller
 
     public function create()
     {
-        $readyAssets = Asset::where('status', 'Ready')
-            ->selectRaw('nama_perangkat, merk, count(*) as stok_tersedia')
-            ->groupBy('nama_perangkat', 'merk')
-            ->get();
+        // PERUBAHAN: Tarik semua data secara mentah tanpa selectRaw/groupBy. 
+        // Grouping berdasarkan merk/tipe sekarang diurus otomatis di file Blade view.
+        $readyAssets = Asset::where('status', 'Ready')->get();
 
         return view('bundle.create', compact('readyAssets'));
     }
 
     public function store(Request $request)
     {
+        // 1. Validasi Input
         $request->validate([
             'nama_paket' => 'required',
-            'items'      => 'required|array',
+            // Kita validasi asset_ids (kumpulan ID S/N yang dicentang di form)
+            'asset_ids'  => 'required|array|min:1', 
+        ], [
+            'asset_ids.required' => 'Belum ada barang yang dipilih. Silakan isi Qty atau centang S/N manual minimal satu.',
         ]);
 
-        $itemsToProcess = [];
-        $totalQty = 0;
+        // 2. Keamanan: Pastikan semua S/N yang ditarik masih berstatus 'Ready'
+        // Ini untuk mencegah bentrok kalau ada user lain yang kebetulan narik barang yang sama di detik yang sama
+        $validAssets = Asset::whereIn('id', $request->asset_ids)
+                            ->where('status', 'Ready')
+                            ->get();
 
-        foreach ($request->items as $item) {
-            if (isset($item['qty']) && $item['qty'] > 0) {
-                $assets = Asset::where('status', 'Ready')
-                    ->where('nama_perangkat', $item['nama_perangkat'])
-                    ->take($item['qty'])
-                    ->get();
-
-                if ($assets->count() < $item['qty']) {
-                    return redirect()->back()->withErrors("Stok {$item['nama_perangkat']} kurang!");
-                }
-                
-                $itemsToProcess = array_merge($itemsToProcess, $assets->all());
-                $totalQty += $item['qty'];
-            }
+        if ($validAssets->count() < count($request->asset_ids)) {
+            return redirect()->back()->withErrors("Gagal! Beberapa S/N yang dipilih ternyata sudah tidak 'Ready' (mungkin baru saja ditarik user lain).");
         }
 
-        if (empty($itemsToProcess)) {
-            return redirect()->back()->withErrors("Belum ada barang yang dipilih.");
-        }
-
+        // 3. Buat Paket (Bundle)
         $bundle = Bundle::create([
             'nama_paket' => $request->nama_paket,
             'status'     => 'draft',
             'keterangan' => $request->keterangan,
         ]);
 
-        foreach ($itemsToProcess as $asset) {
+        // 4. Masukkan item ke Bundle dan update status Asset menjadi Standby-Keluar
+        foreach ($validAssets as $asset) {
             BundleItem::create([
                 'bundle_id' => $bundle->id,
                 'asset_id'  => $asset->id,
-                'qty'       => 1,
+                'qty'       => 1, // Tetap 1 karena ini dihitung per S/N fisik
             ]);
 
             $asset->update([
@@ -74,24 +66,28 @@ class BundleController extends Controller
             ]);
         }
 
+        // 5. Catat ke Log Activity
         ActivityLog::catat(
             'create_transaksi_keluar',
-            "Membuat transaksi keluar '{$bundle->nama_paket}' sejumlah {$totalQty} unit",
+            "Membuat transaksi keluar '{$bundle->nama_paket}' sejumlah {$validAssets->count()} unit",
             'Bundle', $bundle->id, null, $bundle->toArray()
         );
 
         return redirect()->route('transactions.create', ['bundle_id' => $bundle->id])
-                         ->with('success', 'Barang berhasil disiapkan!');
+                         ->with('success', 'Paket barang berhasil disiapkan!');
     }
 
     public function destroy($id)
     {
         $bundle = Bundle::findOrFail($id);
 
+        // Kembalikan status barang jadi Ready lagi kalau paket dibatalkan
         foreach ($bundle->items as $item) {
-            $item->asset->update([
-                'status' => 'Ready',
-            ]);
+            if ($item->asset) {
+                $item->asset->update([
+                    'status' => 'Ready',
+                ]);
+            }
         }
 
         ActivityLog::catat(
@@ -102,6 +98,6 @@ class BundleController extends Controller
 
         $bundle->delete();
 
-        return redirect()->route('bundle.index')->with('success', 'Paket dibatalkan, barang kembali ke Ready.');
+        return redirect()->route('bundle.index')->with('success', 'Paket dibatalkan, status barang kembali menjadi Ready.');
     }
 }

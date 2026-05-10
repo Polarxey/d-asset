@@ -3,21 +3,22 @@
     <h4 class="fw-bold mb-0" style="color:#c9d1d9;"><i class="ti ti-file-invoice me-2" style="color:#3fb950;"></i>Generate BSTP</h4>
 </div>
 
-<?php if($bundles->isEmpty()): ?>
-<div class="card">
-    <div class="card-body text-center py-5" style="background:#0e1117;">
-        <i class="ti ti-packages" style="font-size:2.5rem; color:#484f58; display:block; margin-bottom:12px;"></i>
-        <div style="color:#8b949e; font-size:.9rem;">Tidak ada paket yang siap di-BSTP-kan.</div>
-        <a href="<?php echo e(route('bundle.create')); ?>" class="btn btn-sm mt-3 px-4" style="background:#1f6feb; color:#fff; border:none; border-radius:6px; font-size:.82rem;">
-            <i class="ti ti-plus me-1"></i>Buat Paket Baru
-        </a>
-    </div>
-</div>
-<?php else: ?>
-
 <div class="row g-3">
     <div class="col-md-7">
-        <div class="card">
+        
+        <?php if($bundles->isEmpty()): ?>
+        <div class="card h-100">
+            <div class="card-body text-center py-5 d-flex flex-column justify-content-center align-items-center" style="background:#0e1117;">
+                <i class="ti ti-packages" style="font-size:3rem; color:#484f58; display:block; margin-bottom:15px;"></i>
+                <div style="color:#8b949e; font-size:.95rem;">Tidak ada paket yang siap di-BSTP-kan.</div>
+                <a href="<?php echo e(route('bundle.create')); ?>" class="btn btn-sm mt-4 px-4" style="background:#1f6feb; color:#fff; border:none; border-radius:6px; font-size:.82rem;">
+                    <i class="ti ti-plus me-1"></i>Buat Paket Baru
+                </a>
+            </div>
+        </div>
+        
+        <?php else: ?>
+        <div class="card h-100">
             <div class="card-body p-4" style="background:#0e1117;">
                 <form action="<?php echo e(route('transactions.store')); ?>" method="POST" id="bstpForm">
                 <?php echo csrf_field(); ?>
@@ -29,7 +30,7 @@
                         <option value="">-- Pilih Paket --</option>
                         <?php $__currentLoopData = $bundles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $bundle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <option value="<?php echo e($bundle->id); ?>"
-                            data-items="<?php echo e($bundle->items->map(fn($i) => ($i->asset->nama_perangkat ?? '?') . ' (' . ($i->asset->serial_number ?? '-') . ')')->join(', ')); ?>"
+                            data-items="<?php echo e($bundle->items->map(fn($i) => '[S/N: ' . ($i->asset->serial_number ?? '-') . '] - ' . ($i->asset->nama_perangkat ?? '?'))->join('||')); ?>"
                             data-count="<?php echo e($bundle->items->count()); ?>"
                             <?php echo e(request('bundle_id') == $bundle->id ? 'selected' : ''); ?>>
                             <?php echo e($bundle->nama_paket); ?> — <?php echo e($bundle->items->count()); ?> unit
@@ -81,10 +82,11 @@
                 </form>
             </div>
         </div>
+        <?php endif; ?>
     </div>
 
     <div class="col-md-5">
-        <div class="card">
+        <div class="card h-100">
             <div class="card-body p-0">
                 <div class="px-4 py-3" style="border-bottom:1px solid #21262d;">
                     <span style="font-size:.82rem; font-weight:600; color:#c9d1d9;"><i class="ti ti-history me-2" style="color:#8b949e;"></i>Riwayat BSTP</span>
@@ -96,9 +98,9 @@
                             <td class="ps-4">
                                 <div style="color:#58a6ff; font-weight:600; font-family:monospace;"><?php echo e($rt->no_bstp); ?></div>
                                 <div style="color:#8b949e; font-size:.72rem;"><?php echo e($rt->penerima); ?></div>
-                                <div style="color:#484f58; font-size:.72rem;"><?php echo e($rt->tanggal_serah->format('d/m/Y')); ?></div>
+                                <div style="color:#484f58; font-size:.72rem;"><?php echo e(\Carbon\Carbon::parse($rt->tanggal_serah)->format('d/m/Y')); ?></div>
                             </td>
-                            <td class="text-end pe-4">
+                            <td class="text-end pe-4 align-middle">
                                 <a href="<?php echo e(route('transactions.pdf', $rt->id)); ?>"
                                    class="btn btn-sm" style="background:#1a2a1a; color:#3fb950; border:1px solid #238636; font-size:.72rem; border-radius:6px;">
                                     <i class="ti ti-download me-1"></i>PDF
@@ -106,7 +108,7 @@
                             </td>
                         </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                        <tr><td class="text-center py-4" style="color:#484f58;">Belum ada BSTP.</td></tr>
+                        <tr><td class="text-center py-4" style="color:#484f58;">Belum ada riwayat BSTP.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
@@ -119,7 +121,6 @@
         </div>
     </div>
 </div>
-<?php endif; ?>
 
 <script>
 document.getElementById('bundleSelect')?.addEventListener('change', function() {
@@ -128,7 +129,7 @@ document.getElementById('bundleSelect')?.addEventListener('change', function() {
     const list = document.getElementById('bundleItemsList');
     if (this.value) {
         const items = opt.dataset.items || '-';
-        list.innerHTML = items.split(', ').map(i => `<span style="display:inline-block; background:#1c2128; border:1px solid #21262d; border-radius:4px; padding:2px 8px; margin:2px; font-size:.75rem;">${i}</span>`).join('');
+        list.innerHTML = items.split('||').map(i => `<div style="background:#1c2128; border:1px solid #21262d; border-radius:4px; padding:4px 8px; margin-bottom:4px; font-size:.75rem;">${i}</div>`).join('');
         preview.style.display = 'block';
     } else {
         preview.style.display = 'none';
