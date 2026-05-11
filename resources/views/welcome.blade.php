@@ -93,6 +93,12 @@
             </a>
         </li>
     </ul>
+    <form action="{{ route('logout') }}" method="POST" class="d-inline">
+    @csrf
+    <button type="submit" class="btn btn-sm" style="background:transparent; border:none; color:#f85149;">
+        <i class="ti ti-logout me-1"></i> Logout
+    </button>
+</form>
 
     <div class="sidebar-footer">
         <div style="font-size:0.78rem; color:#484f58;">

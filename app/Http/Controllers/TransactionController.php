@@ -12,7 +12,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class TransactionController extends Controller
 {
-    // Halaman buat BSTP — pilih dari paket yang sudah ada
+
     public function create()
     {
         $bundles = Bundle::with('items.asset')
@@ -25,7 +25,6 @@ class TransactionController extends Controller
         return view('transactions.create', compact('bundles', 'recentTransactions'));
     }
 
-    // Simpan BSTP dari paket
     public function store(Request $request)
     {
         $request->validate([
@@ -46,7 +45,6 @@ class TransactionController extends Controller
             'tanggal_serah' => $request->tanggal_serah,
         ]);
 
-        // Buat detail BSTP berdasarkan item di paket, dikelompokkan per nama perangkat
         $grouped = $bundle->items->groupBy(fn($item) => $item->asset->nama_perangkat ?? 'Unknown');
 
         foreach ($grouped as $namaPerangkat => $items) {
@@ -60,7 +58,7 @@ class TransactionController extends Controller
                 'serial_numbers' => $serialNumbers,
             ]);
 
-            // Update semua aset di paket ini ke Used
+
             foreach ($items as $bundleItem) {
                 if ($bundleItem->asset) {
                     $bundleItem->asset->update([
@@ -73,7 +71,7 @@ class TransactionController extends Controller
             }
         }
 
-        // Tandai paket sebagai selesai
+
         $bundle->update(['status' => Bundle::STATUS_SELESAI]);
 
         ActivityLog::catat(
@@ -88,14 +86,14 @@ class TransactionController extends Controller
             ->with('success', "BSTP {$request->no_bstp} berhasil dibuat!");
     }
 
-    // Index semua transaksi
+
     public function index()
     {
         $transactions = Transaction::latest()->get();
         return view('transactions.index', compact('transactions'));
     }
 
-    // Download PDF BSTP
+
     public function downloadPDF($id)
     {
         $transaction = Transaction::with('details')->findOrFail($id);
