@@ -10,7 +10,7 @@ class AuthController extends Controller
     public function showLoginForm()
     {
         if (Auth::check()) {
-            return redirect()->route('asset.index'); 
+            return redirect()->route('assets.index');
         }
         return view('auth.login');
     }
@@ -18,13 +18,16 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required'
+            'email' => 'required|email',
+            'password' => 'required',
         ]);
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('asset')->with('success', 'Selamat datang, ' . Auth::user()->name . '!');
+            
+            // Perbaikan di sini: arahkan ke route name 'assets.index'
+            return redirect()->intended(route('assets.index'))
+                ->with('success', 'Selamat datang, ' . Auth::user()->name . '!');
         }
 
         return back()->withErrors([
@@ -37,6 +40,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/login');
+
+        return redirect()->route('login');
     }
 }
