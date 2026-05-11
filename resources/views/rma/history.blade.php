@@ -32,7 +32,13 @@
                     <td>{{ $item->customer_name }}</td>
                     <td style="color:#8b949e;">{{ $item->tanggal_rma ? \Carbon\Carbon::parse($item->tanggal_rma)->format('d/m/Y') : '-' }}</td>
                     <td class="text-center pe-4">
-                        <span class="badge bg-success-subtle text-success border border-success-subtle px-2">Completed</span>
+                        <div class="d-flex justify-content-center gap-2">
+                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 d-flex align-items-center">Completed</span>
+                            
+                            <a href="{{ route('rma.download_pdf', $item->id) }}" class="btn btn-sm py-1 px-2" style="background:#1a2a1a; color:#3fb950; border:1px solid #238636; font-size:.7rem;">
+                                <i class="ti ti-download me-1"></i>PDF
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 @empty

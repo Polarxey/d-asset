@@ -34,7 +34,7 @@
             <div class="row g-3">
                 <div class="col-md-4">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e;">ID PA <span style="color:#f85149;">*</span></label>
-                    <input type="text" name="id_pa" id="id_pa" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" placeholder="A1213..." required value="<?php echo e(old('id_pa')); ?>">
+                    <input type="text" name="id_pa" id="id_pa" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;"required value="<?php echo e(old('id_pa')); ?>">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e;">Tanggal Masuk <span style="color:#f85149;">*</span></label>
@@ -42,12 +42,12 @@
                 </div>
                 <div class="col-md-4">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e;">Lokasi Asal <span style="color:#f85149;">*</span></label>
-                    <input type="text" name="lokasi_asal" id="lokasi_asal" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" placeholder="Site Asal" required value="<?php echo e(old('lokasi_asal')); ?>">
+                    <input type="text" name="lokasi_asal" id="lokasi_asal" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;"required value="<?php echo e(old('lokasi_asal')); ?>">
                 </div>
 
                 <div class="col-md-4">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e;">Customer Name <span style="color:#f85149;">*</span></label>
-                    <input type="text" name="customer_name" id="customer_name" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" placeholder="Nama Pelanggan" required value="<?php echo e(old('customer_name')); ?>">
+                    <input type="text" name="customer_name" id="customer_name" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" required value="<?php echo e(old('customer_name')); ?>">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e;">Valuation Type <span style="color:#f85149;">*</span></label>
@@ -61,20 +61,20 @@
                 </div>
                 <div class="col-md-4">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e;">Nama Perangkat <span style="color:#f85149;">*</span></label>
-                    <input type="text" name="nama_perangkat" id="nama_perangkat" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" placeholder="Contoh: Switch" required value="<?php echo e(old('nama_perangkat')); ?>">
+                    <input type="text" name="nama_perangkat" id="nama_perangkat" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;"required value="<?php echo e(old('nama_perangkat')); ?>">
                 </div>
 
                 <div class="col-md-4">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e;">Merk</label>
-                    <input type="text" name="merk" id="merk" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" placeholder="Contoh: Raisecom" value="<?php echo e(old('merk')); ?>">
+                    <input type="text" name="merk" id="merk" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;"value="<?php echo e(old('merk')); ?>">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e;">Tipe Perangkat <span style="color:#f85149;">*</span></label>
-                    <input type="text" name="type" id="type" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" placeholder="Contoh: ISCOM2600" required value="<?php echo e(old('type')); ?>">
+                    <input type="text" name="type" id="type" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;"required value="<?php echo e(old('type')); ?>">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e;">Serial Number (S/N) <span style="color:#f85149;">*</span></label>
-                    <input type="text" name="serial_number" id="serial_number" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" placeholder="SN Perangkat" required value="<?php echo e(old('serial_number')); ?>">
+                    <input type="text" name="serial_number" id="serial_number" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;"required value="<?php echo e(old('serial_number')); ?>">
                 </div>
             </div>
 

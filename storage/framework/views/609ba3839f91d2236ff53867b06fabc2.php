@@ -20,7 +20,7 @@
     <div class="login-card">
         <div class="text-center mb-4">
             <i class="ti ti-box" style="font-size: 3rem; color: #e3b341;"></i>
-            <h4 class="mt-2" style="font-weight: 600;">Login ke D-Asset</h4>
+            <h4 class="mt-2" style="font-weight: 600;">Login</h4>
         </div>
 
         <?php if($errors->any()): ?>

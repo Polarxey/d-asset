@@ -16,7 +16,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e;">Nama Transaksi / Paket <span style="color:#f85149;">*</span></label>
-                    <input type="text" name="nama_paket" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" placeholder="Contoh: Pengeluaran-001" required>
+                    <input type="text" name="nama_paket" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e;">Keterangan</label>

@@ -12,28 +12,28 @@ class RmaController extends Controller
 {
     public function index()
     {
-        // Menampilkan barang yang menunggu di-RMA (Standby Masuk)
+        
         $assets = Asset::standbyMasuk()->latest()->get();
         return view('rma.index', compact('assets'));
     }
 
     public function history()
     {
-        // Menampilkan riwayat RMA yang sudah SELESAI (Completed)
+        
         $history = TransaksiRma::with('asset')->where('status_proses', 'Completed')->latest()->get();
         return view('rma.history', compact('history'));
     }
 
     public function create()
     {
-        // Menampilkan form input barang retur
+        
         return view('rma.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            // Jika ada asset_id (dari pencarian), abaikan validasi unique untuk S/N tersebut
+            
             'serial_number'  => 'required|unique:assets,serial_number,' . $request->asset_id,
             'id_pa'          => 'required',
             'nama_perangkat' => 'required',
@@ -42,7 +42,7 @@ class RmaController extends Controller
             'serial_number.unique' => 'S/N ini sudah ada di database!',
         ]);
 
-        // Gunakan updateOrCreate agar jika S/N sudah ada (status Used), datanya diperbarui jadi Standby 
+         
         $asset = Asset::updateOrCreate(
             ['serial_number' => $request->serial_number],
             [
@@ -50,7 +50,7 @@ class RmaController extends Controller
                 'merk'           => $request->merk,
                 'type'           => $request->type,
                 'sumber'         => 'retur',
-                'status'         => 'Standby', // Menjadi Standby Masuk 
+                'status'         => 'Standby', 
                 'id_pa'          => $request->id_pa,
                 'customer_name'  => $request->customer_name,
                 'lokasi_asal'    => $request->lokasi_asal,
@@ -59,7 +59,7 @@ class RmaController extends Controller
             ]
         );
 
-        // Record di Transaksi RMA, semua field dimasukkan biar nggak error MySQL 1364
+
         TransaksiRma::updateOrCreate(
             ['asset_id' => $asset->id, 'status_proses' => 'Pending'],
             [
@@ -90,7 +90,7 @@ class RmaController extends Controller
     public function generateForm($assetId)
     {
         $asset = Asset::findOrFail($assetId);
-        // Generate Auto No RMA
+
         $autoNoRma = 'RMA-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -4));
         
         return view('rma.generate', compact('asset', 'autoNoRma'));
@@ -103,13 +103,13 @@ class RmaController extends Controller
         
         $dataLama = $asset->toArray();
 
-        // Update status Asset jadi Ready & Gudang
+
         $asset->update([
             'status' => 'Ready',
             'lokasi' => 'Gudang'
         ]);
 
-        // Update transaksi RMA jadi Completed
+
         if ($rma) {
             $rma->update([
                 'status_proses' => 'Completed',
@@ -124,7 +124,7 @@ class RmaController extends Controller
             'Asset', $asset->id, $dataLama, $asset->fresh()->toArray()
         );
 
-        // Cetak PDF
+
         $pdf = Pdf::loadView('pdf.rma', compact('asset', 'request'));
         return $pdf->download('RMA_' . $asset->serial_number . '.pdf');
     }
@@ -133,7 +133,7 @@ class RmaController extends Controller
     {
         $search = $request->get('q');
         
-        // Cari barang yang statusnya 'Used' berdasarkan S/N atau Lokasi via AJAX
+
         $assets = Asset::used()
             ->where(function($query) use ($search) {
                 $query->where('serial_number', 'LIKE', "%$search%")
@@ -142,6 +142,24 @@ class RmaController extends Controller
             ->limit(10)
             ->get();
 
-        return response()->json($assets);
+        return response()->json($assets); 
+        }
+
+    public function downloadPdfHistory($id)
+    {
+        $rma = TransaksiRma::with('asset')->findOrFail($id);
+        $asset = $rma->asset;
+
+        if (!$asset) {
+            return back()->withErrors('Data aset tidak ditemukan di database.');
+        }
+
+        $request = (object) [
+            'no_rma' => $rma->no_rma,
+            'tanggal_rma' => $rma->tanggal_rma
+        ];
+        $pdf = Pdf::loadView('pdf.rma', compact('asset', 'request'));
+        return $pdf->download('RMA_REPRINT_' . ($asset->serial_number ?? $id) . '.pdf');
     }
+
 }

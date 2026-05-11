@@ -19,22 +19,22 @@
             <div class="row g-3">
                 <div class="col-md-12">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e; text-transform:uppercase; letter-spacing:.5px;">Serial Number (S/N) <span style="color:#f85149;">*</span></label>
-                    <input type="text" name="serial_number" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9; font-family:monospace;" placeholder="Nomor seri perangkat" required value="{{ old('serial_number') }}">
+                    <input type="text" name="serial_number" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9; font-family:monospace;"required value="{{ old('serial_number') }}">
                 </div>
 
                 <div class="col-md-12">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e; text-transform:uppercase; letter-spacing:.5px;">Nama Perangkat <span style="color:#f85149;">*</span></label>
-                    <input type="text" name="nama_perangkat" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" placeholder="Contoh: Switch L2 / Router" required value="{{ old('nama_perangkat') }}">
+                    <input type="text" name="nama_perangkat" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" required value="{{ old('nama_perangkat') }}">
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e; text-transform:uppercase; letter-spacing:.5px;">Merk</label>
-                    <input type="text" name="merk" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" placeholder="Contoh: Raisecom / ZTE" value="{{ old('merk') }}">
+                    <input type="text" name="merk" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" value="{{ old('merk') }}">
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e; text-transform:uppercase; letter-spacing:.5px;">Tipe Perangkat <span style="color:#f85149;">*</span></label>
-                    <input type="text" name="type" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" placeholder="Contoh: ISCOM2600" required value="{{ old('type') }}">
+                    <input type="text" name="type" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" required value="{{ old('type') }}">
                 </div>
 
                 <div class="col-md-6">

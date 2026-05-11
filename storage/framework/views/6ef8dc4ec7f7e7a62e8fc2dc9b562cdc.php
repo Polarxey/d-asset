@@ -51,7 +51,7 @@
                         <label class="form-label" style="font-size:.78rem; color:#8b949e; text-transform:uppercase; letter-spacing:.5px;">Nomor BSTP <span style="color:#f85149;">*</span></label>
                         <input type="text" name="no_bstp" class="form-control form-control-sm"
                             style="background:#161b22; border:1px solid #30363d; color:#c9d1d9; font-family:monospace;"
-                            placeholder="001/BSTP/ICON+/2026" required>
+                            required>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label" style="font-size:.78rem; color:#8b949e; text-transform:uppercase; letter-spacing:.5px;">Tanggal Serah Terima <span style="color:#f85149;">*</span></label>
@@ -63,13 +63,13 @@
                         <label class="form-label" style="font-size:.78rem; color:#8b949e; text-transform:uppercase; letter-spacing:.5px;">Mitra / Penerima <span style="color:#f85149;">*</span></label>
                         <input type="text" name="penerima" class="form-control form-control-sm"
                             style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;"
-                            placeholder="Contoh: PT TUNAS ZETA UTAMA" required>
+                            required>
                     </div>
                     <div class="col-md-12">
                         <label class="form-label" style="font-size:.78rem; color:#8b949e; text-transform:uppercase; letter-spacing:.5px;">Lokasi / Site Tujuan <span style="color:#f85149;">*</span></label>
                         <input type="text" name="lokasi_tujuan" class="form-control form-control-sm"
                             style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;"
-                            placeholder="Contoh: Disdukcapil Pabuaran" required>
+                            required>
                     </div>
                 </div>
 

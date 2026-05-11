@@ -25,7 +25,6 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             
-            // Perbaikan di sini: arahkan ke route name 'assets.index'
             return redirect()->intended(route('assets.index'))
                 ->with('success', 'Selamat datang, ' . Auth::user()->name . '!');
         }
