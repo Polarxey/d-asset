@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Asset extends Model
 {
+
     const STATUS_STANDBY        = 'Standby';
     const STATUS_READY          = 'Ready';
     const STATUS_STANDBY_KELUAR = 'Standby-Keluar';
@@ -15,10 +16,10 @@ class Asset extends Model
     const SUMBER_BARU  = 'baru';
 
     protected $fillable = [
-        'serial_number', 'nama_perangkat', 'merk',
+        'serial_number', 'material_number', 'nama_perangkat', 'merk', 'type',
         'id_pa', 'customer_name', 'lokasi_asal', 'valuation_type', 'sumber',
         'status', 'lokasi', 'penerima',
-        'tanggal_masuk', 'tanggal_keluar', 'material_number'
+        'tanggal_masuk', 'tanggal_keluar',
     ];
 
     protected $casts = [
@@ -35,6 +36,7 @@ class Asset extends Model
     {
         return $this->hasMany(TransaksiRma::class, 'asset_id');
     }
+
 
     public function scopeStandbyMasuk($query)
     {
@@ -55,6 +57,7 @@ class Asset extends Model
     {
         return $query->where('status', self::STATUS_USED);
     }
+
 
     public function getStatusBadgeClassAttribute(): string
     {
