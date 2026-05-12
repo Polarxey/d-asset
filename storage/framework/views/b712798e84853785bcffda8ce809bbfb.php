@@ -76,6 +76,10 @@
                     <label class="form-label" style="font-size:.78rem; color:#8b949e;">Serial Number (S/N) <span style="color:#f85149;">*</span></label>
                     <input type="text" name="serial_number" id="serial_number" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;"required value="<?php echo e(old('serial_number')); ?>">
                 </div>
+                <div class="mb-3">
+                    <label class="form-label" style="font-size:.78rem; color:#8b949e; text-transform:uppercase;">Material Number</label>
+                    <input type="text" name="material_number" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" value="<?php echo e(old('material_number')); ?>">
+                </div>
             </div>
 
             <div class="mt-4 pt-3 d-flex gap-2" style="border-top:1px solid #21262d;">

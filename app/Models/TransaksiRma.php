@@ -13,7 +13,7 @@ class TransaksiRma extends Model
     protected $fillable = [
         'id_pa', 'tanggal_masuk', 'lokasi_asal',
         'customer_name', 'merk', 'serial_number', 'nama_perangkat',
-        'valuation_type', 'asset_id', 'no_rma', 'tanggal_rma', 'status_proses',
+        'valuation_type', 'asset_id', 'no_rma', 'tanggal_rma', 'status_proses', 'material_number'
     ];
 
     protected $casts = [

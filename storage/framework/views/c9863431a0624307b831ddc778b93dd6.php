@@ -132,7 +132,7 @@
             <td>7.</td>
             <td>Type</td>
             <td>:</td>
-            <td><?php echo e($asset->type); ?></td>
+            <td><?php echo e($asset->type ?? '-'); ?></td>
         </tr>
         <tr>
             <td>8.</td>
@@ -140,7 +140,14 @@
             <td>:</td>
             <td class="fw-bold"><?php echo e($asset->serial_number); ?></td>
         </tr>
+            <td>9.</td>
+            <td>Material Number</td>
+            <td>:</td>
+            <td class="fw-bold"><?php echo e($asset->material_number ?? '-'); ?></td>
+        </tr>
     </table>
+
+
 
     <div class="fw-bold" style="margin-top: 15px; margin-bottom: 5px;">Beri Tanda Checker Pada Kotak Jika Material Rusak</div>
 

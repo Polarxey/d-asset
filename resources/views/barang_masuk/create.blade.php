@@ -22,6 +22,11 @@
                     <input type="text" name="serial_number" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9; font-family:monospace;"required value="{{ old('serial_number') }}">
                 </div>
 
+            <div class="mb-3">
+                    <label class="form-label" style="font-size:.78rem; color:#8b949e; text-transform:uppercase;">Material Number</label>
+                    <input type="text" name="material_number" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" value="{{ old('material_number') }}">
+                </div>
+
                 <div class="col-md-12">
                     <label class="form-label" style="font-size:.78rem; color:#8b949e; text-transform:uppercase; letter-spacing:.5px;">Nama Perangkat <span style="color:#f85149;">*</span></label>
                     <input type="text" name="nama_perangkat" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" required value="{{ old('nama_perangkat') }}">
