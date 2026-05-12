@@ -2,7 +2,7 @@
 
 Sistem manajemen siklus hidup perangkat telekomunikasi untuk PLN ICON+ Bandung. Dibangun di atas Laravel 12 dengan antarmuka dark theme berbasis Bootstrap 5.
 
-Sistem ini bukan sekadar daftar inventaris. D-Asset dirancang untuk mengontrol pergerakan perangkat secara penuh — dari barang masuk gudang, penerbitan dokumen RMA dan BSTP, hingga perangkat terpasang di lokasi pelanggan — dengan audit trail yang tercatat pada setiap langkahnya.
+Sistem ini bukan sekadar daftar inventaris. D-Asset dirancang untuk mengontrol pergerakan perangkat secara penuh, dari barang masuk gudang, penerbitan dokumen RMA dan BSTP, hingga perangkat terpasang di lokasi pelanggan dengan audit trail yang tercatat pada setiap langkahnya.
 
 ---
 
@@ -24,28 +24,28 @@ Sistem ini bukan sekadar daftar inventaris. D-Asset dirancang untuk mengontrol p
 ### Transaksi Masuk
 Sistem membagi alur masuk barang menjadi dua jalur yang terpisah:
 
-**Jalur Barang Retur** — untuk perangkat hasil dismantle, ex-proyek, atau barang rusak dari lapangan. Mewajibkan 6 data: ID PA, Tanggal Masuk, Lokasi Asal, Customer Name (CPE), Merk, dan Serial Number. Barang otomatis masuk ke status Standby Masuk.
+**Jalur Barang Retur** =>  untuk perangkat hasil dismantle, ex-proyek, atau barang rusak dari lapangan. Mewajibkan 6 data: ID PA, Tanggal Masuk, Lokasi Asal, Customer Name (CPE), Merk, dan Serial Number. Barang otomatis masuk ke status Standby Masuk.
 
-**Jalur Barang Masuk Baru** — untuk perangkat baru dari pusat. Setelah disubmit, barang langsung berstatus Ready dan kolom lokasi otomatis terisi "Gudang".
+**Jalur Barang Masuk Baru** => untuk perangkat baru dari pusat. Setelah disubmit, barang langsung berstatus Ready dan kolom lokasi otomatis terisi "Gudang".
 
 ### Master Asset
 Halaman pusat informasi semua perangkat, tersegmentasi dalam 4 tab terpisah:
-- **Standby Masuk** — menampilkan 6 kolom data retur secara lengkap
-- **Ready (Gudang)** — stok tersedia, siap dikeluarkan
-- **Standby Keluar** — perangkat yang sedang dalam proses keluar
-- **Used (Terpasang)** — perangkat yang sudah berada di lokasi pelanggan
+- **Standby Masuk** : menampilkan 6 kolom data retur secara lengkap
+- **Ready (Gudang)** : stok tersedia, siap dikeluarkan
+- **Standby Keluar** : perangkat yang sedang dalam proses keluar
+- **Used (Terpasang)** : perangkat yang sudah berada di lokasi pelanggan
 
 Kolom "Tipe" telah dihapus secara permanen dari seluruh sistem.
 
 ### Transaksi Keluar
-**Individual** — mengeluarkan satu unit perangkat dari gudang untuk satu BSTP langsung.
+**Individual** => mengeluarkan satu unit perangkat dari gudang untuk satu BSTP langsung.
 
-**Paket** — mengeluarkan beberapa jenis perangkat sekaligus untuk satu proyek. Sistem memvalidasi stok secara otomatis; jika stok kurang dari qty yang diminta, sistem memberikan peringatan dan hanya memproses unit yang tersedia.
+**Paket** => mengeluarkan beberapa jenis perangkat sekaligus untuk satu proyek. Sistem memvalidasi stok secara otomatis; jika stok kurang dari qty yang diminta, sistem memberikan peringatan dan hanya memproses unit yang tersedia.
 
 ### Generate Dokumen
-**Generate RMA** — memilih unit dari daftar Standby Masuk. Data terisi otomatis dari input retur awal. Setelah PDF diterbitkan, status perangkat otomatis berpindah dari Standby Masuk ke Ready (Gudang).
+**Generate RMA** => memilih unit dari daftar Standby Masuk. Data terisi otomatis dari input retur awal. Setelah PDF diterbitkan, status perangkat otomatis berpindah dari Standby Masuk ke Ready (Gudang).
 
-**Generate BSTP** — memilih transaksi keluar yang sudah dibuat dan mengunduh dokumen BSTP dalam format PDF standar perusahaan, sesuai format Berita Acara Serah Terima PLN ICON Plus.
+**Generate BSTP** => memilih transaksi keluar yang sudah dibuat dan mengunduh dokumen BSTP dalam format PDF standar perusahaan, sesuai format Berita Acara Serah Terima PLN ICON Plus.
 
 ### Log Activity
 Setiap pergerakan data tercatat secara otomatis: siapa yang melakukan aksi, kapan waktunya, dan apa yang berubah. Tersedia tampilan sebelum dan sesudah perubahan (diff) untuk setiap event edit.
