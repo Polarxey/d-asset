@@ -35,7 +35,6 @@ Halaman pusat informasi semua perangkat, tersegmentasi dalam 4 tab terpisah:
 - **Standby Keluar** — perangkat yang sedang dalam proses keluar
 - **Used (Terpasang)** — perangkat yang sudah berada di lokasi pelanggan
 
-Kolom "Tipe" telah dihapus secara permanen dari seluruh sistem.
 
 ### Transaksi Keluar
 **Individual** => mengeluarkan satu unit perangkat dari gudang untuk satu BSTP langsung.
