@@ -24,16 +24,18 @@ Sistem ini bukan sekadar daftar inventaris. D-Asset dirancang untuk mengontrol p
 ### Transaksi Masuk
 Sistem membagi alur masuk barang menjadi dua jalur yang terpisah:
 
-**Jalur Barang Retur** =>  untuk perangkat hasil dismantle, ex-proyek, atau barang rusak dari lapangan. Mewajibkan 7 data: ID PA, Tanggal Masuk, Lokasi Asal, Customer Name (CPE), Merk, material number dan Serial Number. Barang otomatis masuk ke status Standby Masuk.
+**Jalur Barang Retur** — untuk perangkat hasil dismantle, ex-proyek, atau barang rusak dari lapangan. Mewajibkan 6 data: ID PA, Tanggal Masuk, Lokasi Asal, Customer Name (CPE), Merk, dan Serial Number. Barang otomatis masuk ke status Standby Masuk.
 
 **Jalur Barang Masuk Baru** => untuk perangkat baru dari pusat. Setelah disubmit, barang langsung berstatus Ready dan kolom lokasi otomatis terisi "Gudang".
 
 ### Master Asset
 Halaman pusat informasi semua perangkat, tersegmentasi dalam 4 tab terpisah:
-- **Standby Masuk** : menampilkan 6 kolom data retur secara lengkap
-- **Ready (Gudang)** : stok tersedia, siap dikeluarkan
-- **Standby Keluar** : perangkat yang sedang dalam proses keluar
-- **Used (Terpasang)** : perangkat yang sudah berada di lokasi pelanggan
+- **Standby Masuk** — menampilkan 6 kolom data retur secara lengkap
+- **Ready (Gudang)** — stok tersedia, siap dikeluarkan
+- **Standby Keluar** — perangkat yang sedang dalam proses keluar
+- **Used (Terpasang)** — perangkat yang sudah berada di lokasi pelanggan
+
+Kolom "Tipe" telah dihapus secara permanen dari seluruh sistem.
 
 ### Transaksi Keluar
 **Individual** => mengeluarkan satu unit perangkat dari gudang untuk satu BSTP langsung.
