@@ -8,30 +8,32 @@ use Illuminate\Http\Request;
 
 class BarangMasukController extends Controller
 {
-    // Form input barang baru dari pusat
     public function create()
     {
         return view('barang_masuk.create');
     }
 
-    // Simpan barang baru — langsung Ready
     public function store(Request $request)
     {
         $request->validate([
-            'serial_number'  => 'required|string|unique:assets,serial_number',
-            'nama_perangkat' => 'required|string',
-            'merk'           => 'nullable|string',
-            'tanggal_masuk'  => 'required|date',
+            'serial_number'   => 'required|string|unique:assets,serial_number',
+            'material_number' => 'required|string',
+            'nama_perangkat'  => 'required|string',
+            'type'            => 'required|string',
+            'merk'            => 'nullable|string',
+            'tanggal_masuk'   => 'required|date',
         ]);
 
         $asset = Asset::create([
-            'serial_number'  => $request->serial_number,
-            'nama_perangkat' => $request->nama_perangkat,
-            'merk'           => $request->merk,
-            'sumber'         => Asset::SUMBER_BARU,
-            'status'         => Asset::STATUS_READY,
-            'lokasi'         => 'Gudang',
-            'tanggal_masuk'  => $request->tanggal_masuk,
+            'serial_number'   => $request->serial_number,
+            'material_number' => $request->material_number,
+            'nama_perangkat'  => $request->nama_perangkat,
+            'type'            => $request->type,
+            'merk'            => $request->merk,
+            'sumber'          => Asset::SUMBER_BARU,
+            'status'          => Asset::STATUS_READY,
+            'lokasi'          => 'Gudang',
+            'tanggal_masuk'   => $request->tanggal_masuk,
         ]);
 
         ActivityLog::catat(

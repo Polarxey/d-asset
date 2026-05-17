@@ -51,7 +51,7 @@
     </div>
 
     <div class="content">
-        <p>Telah diserah terimakan Aksesoris FO berikut ini dari PLN ICON Plus kepada {{ $transaction->penerima }} untuk {{ $transaction->lokasi_tujuan }} dengan rincian sebagai berikut:</p>
+        <p>Telah diserah terimakan perangkat berikut ini dari PLN ICON Plus kepada {{ $transaction->penerima }} untuk {{ $transaction->lokasi_tujuan }} dengan rincian sebagai berikut:</p>
     </div>
 
     <table class="table">

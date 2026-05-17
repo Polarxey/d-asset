@@ -8,6 +8,34 @@
     </div>
 </div>
 
+{{-- Kotak Filter --}}
+<div class="card mb-4" style="background:#161b22; border:1px solid #30363d; border-radius: 8px;">
+    <div class="card-body p-3">
+        <form action="{{ route('assets.index') }}" method="GET" class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label" style="font-size:.75rem; color:#8b949e;">Serial Number (S/N)</label>
+                <input type="text" name="sn" class="form-control form-control-sm" style="background:#0e1117; border:1px solid #30363d; color:#c9d1d9;" value="{{ request('sn') }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" style="font-size:.75rem; color:#8b949e;">Material Number</label>
+                <input type="text" name="material_number" class="form-control form-control-sm" style="background:#0e1117; border:1px solid #30363d; color:#c9d1d9;" value="{{ request('material_number') }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label" style="font-size:.75rem; color:#8b949e;">Merk</label>
+                <input type="text" name="merk" class="form-control form-control-sm" style="background:#0e1117; border:1px solid #30363d; color:#c9d1d9;" value="{{ request('merk') }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label" style="font-size:.75rem; color:#8b949e;">Lokasi (Used)</label>
+                <input type="text" name="lokasi" class="form-control form-control-sm" style="background:#0e1117; border:1px solid #30363d; color:#c9d1d9;" value="{{ request('lokasi') }}">
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-sm w-100" style="background:#238636; color:#fff; border:none; font-weight:600;"><i class="ti ti-search me-1"></i>Filter</button>
+                <a href="{{ route('assets.index') }}" class="btn btn-sm w-100 text-center" style="background:#1c2128; color:#8b949e; border:1px solid #30363d; font-weight:600;"><i class="ti ti-refresh me-1"></i>Reset</a>
+            </div>
+        </form>
+    </div>
+</div>
+
 {{-- Tab Navigation --}}
 <ul class="nav mb-3" id="assetTab" role="tablist" style="gap:4px; border-bottom:1px solid #21262d; padding-bottom:0;">
     <li class="nav-item">
@@ -41,8 +69,7 @@
 </ul>
 
 <div class="tab-content" id="assetTabContent">
-
-    {{-- TAB 1: Standby Masuk (dari retur) --}}
+    {{-- TAB 1: Standby Masuk --}}
     <div class="tab-pane fade show active" id="standby-masuk">
         <div class="card">
             <div class="card-body p-0">
@@ -78,17 +105,13 @@
                                 @endif
                             </td>
                             <td class="text-center pe-4">
-                                <a href="{{ route('rma.generate.form', $item->id) }}"
-                                   class="btn btn-sm" style="background:#1f3a2a; color:#3fb950; border:1px solid #238636; font-size:.75rem; border-radius:6px;">
+                                <a href="{{ route('rma.generate.form', $item->id) }}" class="btn btn-sm" style="background:#1f3a2a; color:#3fb950; border:1px solid #238636; font-size:.75rem; border-radius:6px;">
                                     <i class="ti ti-file-text me-1"></i>Generate RMA
                                 </a>
-                                <button class="btn btn-sm ms-1" style="background:#1c2128; color:#8b949e; border:1px solid #30363d; font-size:.75rem; border-radius:6px;"
-                                    data-bs-toggle="modal" data-bs-target="#modalEdit{{ $item->id }}">Edit</button>
-                                <form action="{{ route('assets.destroy', $item->id) }}" method="POST" class="d-inline"
-                                    onsubmit="return confirm('Hapus aset S/N {{ $item->serial_number }}?')">
+                                <button class="btn btn-sm ms-1" style="background:#1c2128; color:#8b949e; border:1px solid #30363d; font-size:.75rem; border-radius:6px;" data-bs-toggle="modal" data-bs-target="#modalEdit{{ $item->id }}">Edit</button>
+                                <form action="{{ route('assets.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus aset S/N {{ $item->serial_number }}?')">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="btn btn-sm ms-1"
-                                        style="background:#1c2128; color:#f85149; border:1px solid #30363d; font-size:.75rem; border-radius:6px;">Hapus</button>
+                                    <button type="submit" class="btn btn-sm ms-1" style="background:#1c2128; color:#f85149; border:1px solid #30363d; font-size:.75rem; border-radius:6px;">Hapus</button>
                                 </form>
                             </td>
                         </tr>
@@ -103,54 +126,89 @@
 
     {{-- TAB 2: Ready (Gudang) --}}
     <div class="tab-pane fade" id="ready">
+        <div class="d-flex justify-content-end mb-2 gap-2">
+            <button onclick="switchReadyView('detailed')" id="btn-detailed" class="btn btn-sm" style="background:#1c2128; color:#3fb950; border:1px solid #30363d; font-size:.75rem;">Detailed</button>
+            <button onclick="switchReadyView('simplified')" id="btn-simplified" class="btn btn-sm" style="background:#1c2128; color:#8b949e; border:1px solid #30363d; font-size:.75rem;">Simplified</button>
+        </div>
+
         <div class="card">
             <div class="card-body p-0">
-                <table class="table table-dark table-hover mb-0" style="font-size:.82rem;">
-                    <thead>
-                        <tr style="color:#8b949e; border-bottom:1px solid #21262d;">
-                            <th class="ps-4 py-3">S/N</th>
-                            <th>Nama Perangkat</th>
-                            <th>Merk</th>
-                            <th>Sumber</th>
-                            <th>Lokasi</th>
-                            <th>Tgl Masuk</th>
-                            <th class="text-center pe-4">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($readyAssets as $item)
-                        <tr>
-                            <td class="ps-4 fw-bold" style="color:#58a6ff;">{{ $item->serial_number }}</td>
-                            <td>{{ $item->nama_perangkat }}</td>
-                            <td style="color:#8b949e;">{{ $item->merk ?? '-' }}</td>
-                            <td>
-                                <span class="badge" style="background:{{ $item->sumber === 'retur' ? '#3a2a1a' : '#1a2a1a' }}; color:{{ $item->sumber === 'retur' ? '#e3b341' : '#3fb950' }}; font-size:.7rem;">
-                                    {{ $item->sumber === 'retur' ? 'Retur' : 'Baru' }}
-                                </span>
-                            </td>
-                            <td><em style="color:#484f58; font-style:italic; opacity:.7;">Gudang</em></td>
-                            <td style="color:#8b949e;">{{ $item->tanggal_masuk?->format('d/m/Y') ?? '-' }}</td>
-                            <td class="text-center pe-4">
-                                <button class="btn btn-sm" style="background:#1c2128; color:#8b949e; border:1px solid #30363d; font-size:.75rem; border-radius:6px;"
-                                    data-bs-toggle="modal" data-bs-target="#modalEdit{{ $item->id }}">Edit</button>
-                                <form action="{{ route('assets.destroy', $item->id) }}" method="POST" class="d-inline"
-                                    onsubmit="return confirm('Hapus aset S/N {{ $item->serial_number }}?')">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="btn btn-sm ms-1"
-                                        style="background:#1c2128; color:#f85149; border:1px solid #30363d; font-size:.75rem; border-radius:6px;">Hapus</button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr><td colspan="7" class="text-center py-5" style="color:#484f58;">Gudang kosong. Belum ada barang Ready.</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                {{-- Mode Detailed --}}
+                <div id="ready-detailed">
+                    <table class="table table-dark table-hover mb-0" style="font-size:.82rem;">
+                        <thead>
+                            <tr style="color:#8b949e; border-bottom:1px solid #21262d;">
+                                <th class="ps-4 py-3">Material Number</th>
+                                <th>S/N</th>
+                                <th>Nama Perangkat</th>
+                                <th>Tipe</th>
+                                <th>Merk</th>
+                                <th>Sumber</th>
+                                <th>Tgl Masuk</th>
+                                <th class="text-center pe-4">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($readyAssets as $item)
+                            <tr>
+                                <td class="ps-4 fw-bold" style="color:#58a6ff;">{{ $item->material_number ?? '-' }}</td>
+                                <td>{{ $item->serial_number }}</td>
+                                <td>{{ $item->nama_perangkat }}</td>
+                                <td style="color:#8b949e;">{{ $item->type ?? '-' }}</td>
+                                <td style="color:#8b949e;">{{ $item->merk ?? '-' }}</td>
+                                <td>
+                                    <span class="badge" style="background:{{ $item->sumber === 'retur' ? '#3a2a1a' : '#1a2a1a' }}; color:{{ $item->sumber === 'retur' ? '#e3b341' : '#3fb950' }}; font-size:.7rem;">
+                                        {{ $item->sumber === 'retur' ? 'Retur' : 'Baru' }}
+                                    </span>
+                                </td>
+                                <td style="color:#8b949e;">{{ $item->tanggal_masuk?->format('d/m/Y') ?? '-' }}</td>
+                                <td class="text-center pe-4">
+                                    <button class="btn btn-sm" style="background:#1c2128; color:#8b949e; border:1px solid #30363d; font-size:.75rem; border-radius:6px;" data-bs-toggle="modal" data-bs-target="#modalEdit{{ $item->id }}">Edit</button>
+                                    <form action="{{ route('assets.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus aset S/N {{ $item->serial_number }}?')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="btn btn-sm ms-1" style="background:#1c2128; color:#f85149; border:1px solid #30363d; font-size:.75rem; border-radius:6px;">Hapus</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr><td colspan="8" class="text-center py-5" style="color:#484f58;">Gudang kosong.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                {{-- Mode Simplified --}}
+                <div id="ready-simplified" style="display:none;">
+                    <table class="table table-dark table-hover mb-0" style="font-size:.82rem;">
+                        <thead>
+                            <tr style="color:#8b949e; border-bottom:1px solid #21262d;">
+                                <th class="ps-4 py-3">Material Number</th>
+                                <th>Tipe</th> <th>Merk</th>
+                                <th class="text-center">Brand New (Unit)</th>
+                                <th class="text-center">Used/Retur (Unit)</th>
+                                <th class="text-center">Total Stok</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($readySimplified as $row)
+                            <tr>
+                                <td class="ps-4 fw-bold" style="color:#58a6ff;">{{ $row->material_number ?? '-' }}</td>
+                                <td style="color:#8b949e;">{{ $row->type ?? '-' }}</td> <td>{{ $row->merk ?? '-' }}</td>
+                                <td class="text-center"><span class="badge bg-success-subtle text-success">{{ $row->new_count }}</span></td>
+                                <td class="text-center"><span class="badge bg-warning-subtle text-warning">{{ $row->used_count }}</span></td>
+                                <td class="text-center fw-bold">{{ $row->new_count + $row->used_count }}</td>
+                            </tr>
+                            @empty
+                            <tr><td colspan="6" class="text-center py-5" style="color:#484f58;">Tidak ada ringkasan stok.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
-    {{-- TAB 3: Standby Keluar (sudah masuk paket) --}}
+    {{-- TAB 3: Standby Keluar --}}
     <div class="tab-pane fade" id="standby-keluar">
         <div class="card">
             <div class="card-body p-0">
@@ -176,7 +234,7 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="5" class="text-center py-5" style="color:#484f58;">Tidak ada barang dalam status Standby Keluar.</td></tr>
+                        <tr><td colspan="5" class="text-center py-5" style="color:#484f58;">Kosong.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -184,7 +242,7 @@
         </div>
     </div>
 
-    {{-- TAB 4: Used / Terpasang --}}
+    {{-- TAB 4: Used --}}
     <div class="tab-pane fade" id="used">
         <div class="card">
             <div class="card-body p-0">
@@ -210,17 +268,16 @@
                             <td style="color:#8b949e;">{{ $item->tanggal_keluar?->format('d/m/Y') ?? '-' }}</td>
                         </tr>
                         @empty
-                        <tr><td colspan="6" class="text-center py-5" style="color:#484f58;">Belum ada perangkat terpasang.</td></tr>
+                        <tr><td colspan="6" class="text-center py-5" style="color:#484f58;">Kosong.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-
 </div>
 
-{{-- EDIT MODALS --}}
+{{-- MODAL EDIT FULL CODE --}}
 @foreach(array_merge($standbyMasukAssets->all(), $readyAssets->all()) as $item)
 <div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -238,12 +295,20 @@
                             <input type="text" name="serial_number" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" value="{{ $item->serial_number }}" required>
                         </div>
                         <div class="col-md-6">
+                            <label class="form-label" style="font-size:.78rem; color:#8b949e;">Material Number</label>
+                            <input type="text" name="material_number" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" value="{{ $item->material_number }}">
+                        </div>
+                        <div class="col-md-12">
                             <label class="form-label" style="font-size:.78rem; color:#8b949e;">Nama Perangkat</label>
                             <input type="text" name="nama_perangkat" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" value="{{ $item->nama_perangkat }}" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label" style="font-size:.78rem; color:#8b949e;">Merk</label>
                             <input type="text" name="merk" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" value="{{ $item->merk }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" style="font-size:.78rem; color:#8b949e;">Tipe</label>
+                            <input type="text" name="type" class="form-control form-control-sm" style="background:#161b22; border:1px solid #30363d; color:#c9d1d9;" value="{{ $item->type }}">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label" style="font-size:.78rem; color:#8b949e;">Status</label>
@@ -273,6 +338,26 @@
 @endforeach
 
 <script>
+// Switch Script Mode
+function switchReadyView(mode) {
+    const detailed = document.getElementById('ready-detailed');
+    const simplified = document.getElementById('ready-simplified');
+    const btnDetailed = document.getElementById('btn-detailed');
+    const btnSimplified = document.getElementById('btn-simplified');
+
+    if (mode === 'detailed') {
+        detailed.style.display = 'block';
+        simplified.style.display = 'none';
+        btnDetailed.style.color = '#3fb950';
+        btnSimplified.style.color = '#8b949e';
+    } else {
+        detailed.style.display = 'none';
+        simplified.style.display = 'block';
+        btnDetailed.style.color = '#8b949e';
+        btnSimplified.style.color = '#3fb950';
+    }
+}
+
 // Tab styling — active state
 document.querySelectorAll('#assetTab button').forEach(btn => {
     btn.addEventListener('shown.bs.tab', function() {
