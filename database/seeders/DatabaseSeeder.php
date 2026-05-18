@@ -16,5 +16,7 @@ class DatabaseSeeder extends Seeder
                 'password' => bcrypt('admin123'),
             ]
         );
+
+        $this->call(AssetSeeder::class);
     }
 }
